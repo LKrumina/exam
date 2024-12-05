@@ -9,8 +9,100 @@
 </body>
 </html>
 <script>
-    const startGame = () =>{
-       alert("Do you want to start?")
+    // Game object 
+    const myGame = {
+        "playerName": "",
+        "playerHealth": 100,
+        "playerInventory": [],
+        "possibleInventory": ["dagger", "helmet", "Health potion"],
+        "playerLocation": "",
+        "locations": ["Forrest", "Mountain", "Lake", "Town"],
+        "enemies": [
+            {"name": "Goblin",
+            "damage": 3,
+            "health": 70},
+            {"name": "Dragon",
+            "damage": 10,
+            "health": 30},
+            {"name": "Wizard",
+            "damage": 5,
+            "health": 80},
+            {"name": "Gnome",
+            "damage": 1,
+            "health": 60}
+        ]
+
+        }
+        
+
+    // Start game function
+    const startGame = () => {
+        alert("Are you ready to start?");
+        myGame.playerName = prompt("Please enter your name: ");
+        if (myGame.playerName != "") {
+            alert("Welcome, " + myGame.playerName + " !");
+        } else {
+            alert("Looks like you changed your mind. If you want to play, please refresh the page.");
+        }
+        myGame.playerLocation = myGame.locations[0];
+        alert("You are exploring the " + myGame.playerLocation + " and enjoying the peaceful atmosphere.")
+        
     }
-    startGame();
-   </script>
+
+    // Explore function
+    const explore = () => {
+        const maxLocation = myGame.locations.length; // didn't do -1 so that I don't have to add +1 in the locationIndex formula
+        const min = 0;
+        const locationIndex =  Math.floor(Math.random() * (maxLocation - min)) + min;
+        playerLocation = myGame.locations[locationIndex];
+
+        let random = Math.random();
+
+
+
+        myTimeout = setTimeout(myGreeting, 5000)
+        //for loop different locations
+
+        /*
+        Use recursion to simulate the passage of time in the game. For example, after the
+player explores a location, call a recursive function to determine if any events occur
+over time.
+        */
+    }
+
+    // Fight function
+    const fight = () => {
+
+        //If player health after the last round is less that enemy damage, runs else fights
+
+        myGame.playerHealth = Math.random();
+
+    }
+
+    // Use item function
+    const useItem = () => {
+
+        //depending on the item found gets added health points, if finds health potion, gets 100 health and wins the game
+/*
+Utilize the spread operator to manage the player's inventory. Implement an arrow
+function for a special action, such as using an item from the inventory
+*/
+    }
+
+    // Continue playing function
+    const continuePlaying = () => {
+        let playMore = confirm("Do you want to continue playing?");
+        // User clicked "OK"
+        if (playMore) {
+            return true;
+         // User clicked "Cancel"   
+        } else {
+            return false;
+        }
+    }
+
+    startGame();    
+    
+
+
+</script>
