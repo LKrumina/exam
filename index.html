@@ -2,121 +2,135 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adventure game</title>
 </head>
 <body>
+    <script>
+        // Game object 
+        const myGame = {
+            "playerName": "",
+            "playerHealth": 100,
+            "playerInventory": [],
+            "standardInventory": ["dagger", "helmet"],
+            "playerLocation": "",
+            "locations": ["Forrest", "Mountain", "Lake", "Town"],
+            "enemies": [
+                {"name": "Goblin", "damage": 6, "health": 50},
+                {"name": "Dragon", "damage": 9, "health": 40},
+                {"name": "Wizard", "damage": 7, "health": 70},
+                {"name": "Gnome", "damage": 5, "health": 60}
+            ]
+        },
+    
+        // Start game function
+        startGame = () => {
+            alert("Are you ready to start?");
+            myGame.playerName = prompt("Please enter your name: ");
+            if (myGame.playerName != null) {
+                alert("Welcome, " + myGame.playerName +"!");
+            } else {
+                alert("Ok, Anonymous!");
+            }
+            myGame.playerLocation = myGame.locations[0];
+            alert("You are exploring the " + myGame.playerLocation + " and enjoying the peaceful atmosphere.");
+            myGame.playerInventory = [...myGame.standardInventory];
+            alert("You found a " + myGame.playerInventory[0] + " and a " + myGame.playerInventory[1] + " that will help keep you safe.");
+            explore();
+        },
+    
+         // Use item function
+         addSpecialItem = () => {
+            let specialItem = "health potion";
+            myGame.playerInventory.push(specialItem);
+            myGame.playerHealth = 100;
+            alert("Congratulations, you got lucky and found a " + specialItem + " that restored your health to " + myGame.playerHealth + ". You won!");
+        },
+    
+        // Encounter an enemy function
+        encounterEnemy = () => {
+            let maxEnemies = myGame.enemies.length; 
+            let randomEnemyIndex = Math.floor(Math.random() * maxEnemies);
+            let enemy =  myGame.enemies[randomEnemyIndex];
+            return enemy;
+        },
+    
+        // Fight function
+        fight = (enemy) => {
+            // Save the original health to reset it for future fights  
+            const originalEnemyHealth = enemy.health;  
+
+            while ( myGame.playerHealth > 0 && enemy.health > 0) {
+                let playerDamage = Math.floor(Math.random() * 10) + 1;
+                let enemyDamage = Math.floor(Math.random() * enemy.damage) + 1;
+    
+                myGame.playerHealth -= enemyDamage;
+                enemy.health -= playerDamage;
+    
+                alert("You attack " + enemy.name + " and deal " + playerDamage + " damage.");
+                alert(enemy.name + " attacks you and deals " + enemyDamage + " damage.");
+    
+                if (enemy.health <= 0 && myGame.playerHealth <= 0) {
+                    alert("You fought bravely, but didn't have enough strenght. Both of you died, game over.");
+                    break;
+                } else if (enemy.health <= 0) {
+                    alert("The " + enemy.name + " was defeated. You won!");
+                    break;
+                } else if (myGame.playerHealth <= 0) {
+                    alert("You have been defeated by the " + enemy.name + ". Game over!");
+                    break;
+                }
+            }
+
+            // Reset enemy health
+            enemy.health = originalEnemyHealth;  
+  
+            // If player is still alive, ask if they want to continue  
+            if (myGame.playerHealth > 0) {  
+                continuePlaying();  
+            }  
+        },
+        // Continue playing function
+        continuePlaying = () => {
+            let playMore = confirm("Do you want to continue playing?");
+            // User clicked "OK"
+            if (playMore) {
+                explore();
+             // User clicked "Cancel"   
+            } else {
+                alert("Thank you for playing! See you next time!");
+            }
+        },
+    
+        // Explore function
+        explore = () => {
+            //Determines location
+            let maxLocation = myGame.locations.length; 
+            let randomLocationIndex =  Math.floor(Math.random() * maxLocation);
+            myGame.playerLocation = myGame.locations[randomLocationIndex];
+    
+            //Determines what will happen
+            let randomDetermination = Math.random();
+            if (randomDetermination >= 0.9) {
+                addSpecialItem();
+                continuePlaying();
+            } else if (randomDetermination >= 0.4) {
+                let randomEnemy = encounterEnemy()
+                alert("Be careful, you stumbled upon a " + randomEnemy.name + ".");
+                if (confirm("Are you ready to fight?")){
+                    fight(randomEnemy);
+                } else {
+                    alert("You managed to hide from the " + randomEnemy.name + ". Coast is clear!");
+                    continuePlaying();
+                }
+            } else {
+                alert("You are wandering around the " + myGame.playerLocation + ", but nothing of interest happens.");
+                const myTimeout = setTimeout(explore, 3000) //recursion to simulate the passage of time in the game.
+            } 
+        }
+    
+        //Starts the game
+        startGame();    
+    </script>
 </body>
 </html>
-<script>
-    // Game object 
-    const myGame = {
-        "playerName": "",
-        "playerHealth": 100,
-        "playerInventory": [],
-        "standardInventory": ["dagger", "helmet"],
-        "playerLocation": "",
-        "locations": ["Forrest", "Mountain", "Lake", "Town"],
-        "enemies": [
-            {"name": "Goblin", "damage": 4, "health": 50},
-            {"name": "Dragon", "damage": 9, "health": 30},
-            {"name": "Wizard", "damage": 5, "health": 80},
-            {"name": "Gnome", "damage": 3, "health": 60}
-        ]
-    },
-
-    // Start game function
-    startGame = () => {
-        alert("Are you ready to start?");
-        myGame.playerName = prompt("Please enter your name: ");
-        if (myGame.playerName != null) {
-            alert("Welcome, " + myGame.playerName +"!");
-        } else {
-            alert("Ok, Anonymous!");
-        }
-        myGame.playerLocation = myGame.locations[0];
-        alert("You are exploring the " + myGame.playerLocation + " and enjoying the peaceful atmosphere.");
-        myGame.playerInventory = [...myGame.standardInventory];
-        alert("You found a " + myGame.playerInventory[0] + " and a " + myGame.playerInventory[1] + " that will help keep you safe.");
-        explore();
-    },
-
-     // Use item function
-     addSpecialItem = () => {
-        let specialItem = "health potion";
-        myGame.playerInventory.push(specialItem);
-        myGame.playerHealth = 100;
-        alert("Congratulations, you got lucky and found a " + specialItem + " that restored your health to " + myGame.playerHealth + ". You won!");
-    },
-
-    // Encounter an enemy
-    encounterEnemy = () => {
-        let maxEnemies = myGame.enemies.length; 
-        let randomEnemyIndex = Math.floor(Math.random() * maxEnemies);
-        let enemy =  myGame.enemies[randomEnemyIndex];
-        return enemy;
-    },
-
-    // Fight function
-    fight = (enemy) => {
-        while ( myGame.playerHealth > 0 && enemy.health > 0) {
-            let playerDamage = Math.floor(Math.random() * 10) + 1;
-            let enemyDamage = Math.floor(Math.random() * enemy.damage) + 1;
-
-            myGame.playerHealth -= enemyDamage;
-            enemy.health -= playerDamage;
-
-            alert("You attack " + enemy.name + " and deal " + playerDamage + " damage.");
-            alert(enemy.name + " attacks you and deals " + enemyDamage + " damage.");
-
-            if (enemy.health <= 0) {
-                alert("The " + enemy.name + " was defeated. You won!");
-                continuePlaying();
-            } else if (myGame.playerHealth <= 0) {
-                alert("You have been defeated by the " + enemy.name + ". Game over!");
-                break;
-            }
-        }
-    },
-    // Continue playing function
-    continuePlaying = () => {
-        let playMore = confirm("Do you want to continue playing?");
-        // User clicked "OK"
-        if (playMore) {
-            explore();
-         // User clicked "Cancel"   
-        } else {
-            alert("Thank you for playing! See you next time!");
-        }
-    },
-
-    // Explore function
-    explore = () => {
-        //Determines location
-        let maxLocation = myGame.locations.length; 
-        let randomLocationIndex =  Math.floor(Math.random() * maxLocation);
-        myGame.playerLocation = myGame.locations[randomLocationIndex];
-
-        //Determines what will happen
-        let randomDetermination = Math.random();
-        if (randomDetermination >= 0.85) {
-            addSpecialItem();
-            continuePlaying();
-        } else if (randomDetermination >= 0.4) {
-            let randomEnemy = encounterEnemy()
-            alert("You weren't so lucky and stumbled upon a " + randomEnemy.name + ".");
-            if (confirm("Are you ready to fight?")){
-                fight(randomEnemy);
-            } else {
-                alert("You managed to hide from the " + randomEnemy.name + ". Coast is clear!");
-                continuePlaying();
-            }
-        } else {
-            alert("You are wandering around the " + myGame.playerLocation + ", but nothing of interest happens.");
-            const myTimeout = setTimeout(explore, 4000) //recursion to simulate the passage of time in the game.
-        } 
-    }
-
-    //Starts the game
-    startGame();    
-</script>
